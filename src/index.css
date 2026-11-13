@@ -1,0 +1,255 @@
+@import 'tailwindcss';
+
+/* desktop with enough height to pin a section while scrolling */
+@custom-variant pin (@media (min-width: 1024px) and (min-height: 760px));
+
+/* Design tokens — modelled on the LanderX reference (navy + royal blue) */
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Poppins', 'Inter', ui-sans-serif, sans-serif;
+  --font-hand: 'Caveat', cursive;
+
+  --color-ink: #000000;
+  --color-navy: #121426; /* rgb(18 20 38) card/section gradient start */
+  --color-deep: #031457; /* secondary buttons, pills */
+  --color-card: #11131a;
+  --color-brand: #2934ff; /* primary blue */
+  --color-sky: #8aa5ff; /* light blue accent */
+  --color-iris: #854dff; /* purple accent */
+  --color-muted: rgb(230 236 255 / 0.7); /* body copy */
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-ink font-sans text-white antialiased;
+    letter-spacing: -0.02em;
+    overflow-x: hidden;
+  }
+  section[id] {
+    scroll-margin-top: 80px;
+  }
+  ::selection {
+    background: rgb(41 52 255 / 0.55);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-sky);
+    outline-offset: 3px;
+    border-radius: 8px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}
+
+@layer components {
+  /* LanderX card: navy radial fill, faint blue ring, top inner highlight */
+  .lx-card {
+    background: radial-gradient(97% 115% at 13.2% 3.7%, rgb(18 20 38) 0%, rgb(0 0 0) 100%);
+    box-shadow:
+      0 0 0 1px rgb(0 85 255 / 0.14),
+      inset 0 1px 0 0 rgb(138 165 255 / 0.2);
+    border-radius: 16px;
+  }
+  .lx-card-hover {
+    transition:
+      box-shadow 0.4s ease,
+      transform 0.4s ease;
+  }
+  .lx-card-hover:hover {
+    box-shadow:
+      0 0 0 1px rgb(0 85 255 / 0.35),
+      inset 0 1px 0 0 rgb(138 165 255 / 0.3),
+      0 1px 35px 0 rgb(41 52 255 / 0.3);
+  }
+
+  /* inner "glass" panel used inside cards */
+  .lx-panel {
+    background: rgb(13 14 20 / 0.85);
+    box-shadow:
+      0 0 0 1px rgb(255 255 255 / 0.06),
+      inset 0 1px 0 0 rgb(255 255 255 / 0.04);
+    border-radius: 10px;
+    backdrop-filter: blur(8px);
+  }
+
+  /* square icon tile */
+  .lx-icon {
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    background: linear-gradient(136deg, rgb(138 165 255 / 0.25) -94%, rgb(0 0 0) 70%);
+    box-shadow:
+      0 0 0 1px rgb(41 52 255 / 0.45),
+      0 1px 15px 0 rgb(41 52 255 / 0.25);
+    color: #c9d4ff;
+  }
+
+  /* hero headline fill */
+  .lx-heading {
+    background: linear-gradient(0deg, rgb(230 236 255 / 0.7) -74%, rgb(255 255 255) 123%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* hero blue tile grid */
+  .lx-grid {
+    background-image:
+      linear-gradient(to right, rgb(41 52 255 / 0.24) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(41 52 255 / 0.24) 1px, transparent 1px);
+    background-size: 108px 108px;
+    background-position: center top;
+  }
+
+  /* horizontal section divider */
+  .lx-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.1) 20%, rgb(255 255 255 / 0.1) 80%, transparent);
+  }
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes marquee-rev {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes beam {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.animate-marquee {
+  animation: marquee 40s linear infinite;
+}
+.animate-marquee-rev {
+  animation: marquee-rev 40s linear infinite;
+}
+.animate-beam {
+  animation: beam 6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee,
+  .animate-marquee-rev,
+  .animate-beam {
+    animation: none;
+  }
+}
+
+/* ── 3D helpers ── */
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+/* floating layers only where the tilt runs (desktop, mouse) */
+@media (hover: hover) and (pointer: fine) and (min-width: 1024px) {
+  .depth-1 {
+    transform: translateZ(28px);
+  }
+  .depth-2 {
+    transform: translateZ(56px);
+  }
+  .depth-3 {
+    transform: translateZ(90px);
+  }
+  /* shallow layer for wide, thin bars (navbar) so edges don't overshoot */
+  .depth-nav {
+    transform: translateZ(10px);
+  }
+}
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* keycap-style tile */
+.lx-key {
+  box-shadow:
+    0 0 0 1px rgb(255 255 255 / 0.07),
+    0 4px 0 0 rgb(8 12 48),
+    0 8px 18px -6px rgb(0 0 0 / 0.8);
+}
+.lx-key-on {
+  box-shadow:
+    0 0 0 1px rgb(138 165 255 / 0.6),
+    0 4px 0 0 rgb(14 22 140),
+    0 10px 26px -6px rgb(41 52 255 / 0.7);
+}
+
+@keyframes coin-spin {
+  to {
+    transform: rotateY(360deg);
+  }
+}
+@keyframes flow {
+  to {
+    background-position: 200% 0;
+  }
+}
+.animate-coin {
+  animation: coin-spin 9s linear infinite;
+}
+.animate-flow {
+  background-size: 200% 100%;
+  animation: flow 2.5s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-coin,
+  .animate-flow {
+    animation: none;
+  }
+}
+
+/* spinning gradient border (current role) */
+@property --spin {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+@keyframes spin-border {
+  to {
+    --spin: 360deg;
+  }
+}
+.lx-spin-border {
+  position: relative;
+}
+.lx-spin-border::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  padding: 1.5px;
+  border-radius: 17px;
+  background: conic-gradient(from var(--spin), transparent 0%, #8aa5ff 10%, #2934ff 20%, transparent 32%, transparent 50%, #854dff 62%, transparent 75%);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: spin-border 4s linear infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .lx-spin-border::before {
+    animation: none;
+  }
+}
